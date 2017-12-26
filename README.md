@@ -15,21 +15,31 @@ Best CLI tool for those who are both **Crypto investors** and **Engineers**.
 All data comes from [coinmarketcap.com](https://coinmarketcap.com/) APIs.
 
 ## Changes in this fork
-- use .env variables to calculate current value of your coins each in currency
+- use .env variables to calculate current value of your coins in each currency
 
 ## Install
 
 In order to use coinmon, make sure that you have [Node](https://nodejs.org/) version 6.0.0 or higher.
-
 ```
-$ npm install -g coinmon
+$ git clone https://github.com/bichenkk/coinmon.git
+$ cd coinmon
+$ yarn
+$ npm install -g
+$ npm link
+$ coinmon
 ```
-
 ## Usage
 
-To check the top 10 cryptocurrencies ranked by their market cap, simply enter
+To check the top 10 cryptocurrencies ranked by their market cap
 ```
 $ coinmon
+```
+
+To store and calculate the value of your investment in each applicable currency, create an .env file in the root of the coinmon folder and enter a coin/amount mapping, like so
+
+.env
+```
+BTC=1.5
 ```
 
 ## Options
@@ -72,53 +82,7 @@ $ coinmon -h
 
 <img src="https://raw.githubusercontent.com/bichenkk/coinmon/master/screenshot.png">
 
-## Development
 
-It's simple to run `coinmon` on your local computer.  
-The following is step-by-step instruction.
-
-```
-$ git clone https://github.com/bichenkk/coinmon.git
-$ cd coinmon
-$ yarn
-$ npm install -g
-$ npm link
-$ coinmon
-```
-
-## Docker
-
-### Initial usage
-
-```
-$ docker run --rm -ti jaymoulin/coinmon
-```
-
-You can pass parameters just like `coinmon` binary
-
-```
-$ docker run --rm -ti jaymoulin/coinmon --help
-```
-
-### Local usage
-
-#### Build image
-
-```
-$ docker build -t coinmon .
-```
-
-#### Usage
-
-```
-$ docker run --rm -ti coinmon
-```
-
-You can pass parameters just like `coinmon` binary
-
-```
-$ docker run --rm -ti coinmon --help
-```
 
 ## License
 

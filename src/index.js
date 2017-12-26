@@ -98,7 +98,7 @@ axios.get(sourceUrl)
 		const amtOwned = process.env[record.symbol] ?
 			Number(price * process.env[record.symbol]).toFixed(2) : '-'
 		if (process.env[record.symbol])
-			totalOwnedValue += amtOwned
+			totalOwnedValue += Number(amtOwned)
 		return [
 			record.rank,
 			`${supportEmoji ? '💰	' : ''}${record.symbol}`,
@@ -116,7 +116,7 @@ axios.get(sourceUrl)
 	} else {
 		console.log(`Data source from coinmarketcap.com at ${new Date().toLocaleTimeString()}`)
 		if (totalOwnedValue)
-			table.push('','','','','','','Total:', totalOwnedValue.toFixed(2))
+			table.push(['','','','','','','Total:', Number(totalOwnedValue.toFixed(2))])
 		console.log(table.toString())
 	}
 })

@@ -10,6 +10,8 @@ const os = require('os')
 
 const platform = os.platform() // linux, darwin, win32, sunos
 const supportEmoji = platform !== 'darwin'
+const dotenv = require('dotenv')
+dotenv.config()
 const list = val => val.split(',')
 
 program
@@ -52,7 +54,10 @@ const table = new Table({
 		`Price (${convert})`,
 		'Change (24H)',
 		'Change (1H)',
-		`Market Cap (${convert})`].map(title => title.yellow),
+		`Market Cap (${convert})`,
+		`Qty Owned`,
+		`Amt Owned (${convert})`
+	].map(title => title.yellow),
 	colWidths: [6, 14, 15, 15, 15, 20]
 })
 
@@ -68,6 +73,7 @@ cfonts.say('coinmon', {
 })
 const spinner = ora('Loading data').start()
 const sourceUrl = `https://api.coinmarketcap.com/v1/ticker/?limit=${top}&convert=${convert}`
+let totalOwnedValue = 0
 axios.get(sourceUrl)
 .then(function (response) {
 	spinner.stop()
@@ -79,6 +85,7 @@ axios.get(sourceUrl)
 		return true
 	})
 	.map(record => {
+		const price = record[`price_${convert}`.toLowerCase()]
 		const percentChange24h = record.percent_change_24h
 		const textChange24h = `${percentChange24h}%`
 		const change24h = percentChange24h? (percentChange24h > 0 ? textChange24h.green : textChange24h.red) : 'NA'
@@ -87,24 +94,35 @@ axios.get(sourceUrl)
 		const change1h = percentChange1h ? (percentChange1h > 0 ? textChange1h.green : textChange1h.red) : 'NA'
 		const marketCap = record[`market_cap_${convert}`.toLowerCase()]
 		const displayedMarketCap = humanizeIsEnabled ? humanize.compactInteger(marketCap, 3) : marketCap
+		const qtyOwned = process.env[record.symbol] || '-'
+		const amtOwned = process.env[record.symbol] ?
+			Number(price * process.env[record.symbol]).toFixed(2) : '-'
+		if (process.env[record.symbol])
+			totalOwnedValue += amtOwned
 		return [
-		record.rank,
-		`${supportEmoji ? '💰	' : ''}${record.symbol}`,
-		record[`price_${convert}`.toLowerCase()],
-		change24h,
-		change1h,
-		displayedMarketCap
+			record.rank,
+			`${supportEmoji ? '💰	' : ''}${record.symbol}`,
+			price,
+			change24h,
+			change1h,
+			displayedMarketCap,
+			qtyOwned,
+			amtOwned
 		]
 	})
 	.forEach(record => table.push(record))
 	if (table.length === 0) {
-	console.log('We are not able to find coins matching your keywords'.red)
+		console.log('We are not able to find coins matching your keywords'.red)
 	} else {
-	console.log(`Data source from coinmarketcap.com at ${new Date().toLocaleTimeString()}`)
-	console.log(table.toString())
+		console.log(`Data source from coinmarketcap.com at ${new Date().toLocaleTimeString()}`)
+		if (totalOwnedValue)
+			table.push('','','','','','','Total:', totalOwnedValue.toFixed(2))
+		console.log(table.toString())
 	}
 })
 .catch(function (error) {
 	spinner.stop()
 	console.error('Coinmon is not working now. Please try again later.'.red)
+	if (error && error.code)
+		console.error('Error Code:', error.code)
 })

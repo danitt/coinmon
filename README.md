@@ -14,12 +14,8 @@ Best CLI tool for those who are both **Crypto investors** and **Engineers**.
 
 All data comes from [coinmarketcap.com](https://coinmarketcap.com/) APIs.
 
-## Upcoming 1.0.0
-We are working hard to add more useful features on coinmon!
-* redesign
-* auto-refresh
-* currency detail
-* price chart
+## Changes in this fork
+- use .env variables to calculate current value of your coins each in currency
 
 ## Install
 

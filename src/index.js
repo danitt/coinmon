@@ -11,7 +11,7 @@ const os = require('os')
 const platform = os.platform() // linux, darwin, win32, sunos
 const supportEmoji = platform !== 'darwin'
 const dotenv = require('dotenv')
-dotenv.config()
+dotenv.config({ path: __dirname + '/../.env' })
 const list = val => val.split(',')
 
 program
